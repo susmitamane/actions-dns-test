@@ -1,0 +1,48 @@
+name: dns test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        try: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Install
+        run: |
+          pip install -r requirements.txt
+
+      - name: hostname
+        run: |
+          for opt in '-A' '-d' '-f'; do
+              echo "hostname $opt: $(hostname $opt)"
+          done
+
+      - name: python.socket
+        shell: python
+        run: |
+          import socket
+          for expr in (
+              'socket.gethostname()',
+              'socket.getfqdn()',
+              'socket.getfqdn(socket.gethostname())',
+              'socket.getfqdn(socket.getfqdn())',
+              'socket.gethostbyname_ex(socket.gethostname())[0]',
+              'socket.gethostbyname_ex(socket.getfqdn())[0]'
+          ):
+              print(f'{expr:50}: {eval(expr)}')
+
+      - name: TCP Connection Test
+        run: |
+          python dns_test.py

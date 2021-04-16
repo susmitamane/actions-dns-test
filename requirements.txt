@@ -1,0 +1,2 @@
+async-timeout>=3.0.0
+pyzmq==19.0.*
