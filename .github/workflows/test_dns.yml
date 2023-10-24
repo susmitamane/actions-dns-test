@@ -28,6 +28,7 @@ jobs:
       - name: hostname
         run: |
           echo -e "List the different names/addresses associsated with this host:\n\n"
+          echo "hostname   : $(hostname $opt 2>/dev/null || echo '*error*')"
           for opt in '-A' '-d' '-f'; do
               echo "hostname $opt: $(hostname $opt 2>/dev/null || echo '*error*')"
           done
@@ -38,6 +39,7 @@ jobs:
           echo -e "Expecting nslookup to return $(hostname -f)\n\n"
           for host in "$(hostname)" "$(hostname -f)"; do
               echo "nslookup $host: $(nslookup "$host" | sed -n "s/\(Name:\|\*\*\)\s*\(.*\)/\2/p")"
+              nslookup $host
           done
 
       - name: python.socket
