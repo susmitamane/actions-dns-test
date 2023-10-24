@@ -38,6 +38,7 @@ jobs:
           echo -e "Expecting nslookup to return $(hostname -f)\n\n"
           for host in "$(hostname)" "$(hostname -f)"; do
               echo "nslookup $host: $(nslookup "host" | sed -n "s/Name:\s*\(.*\)/\1/p")"
+              nslookup "host"
           done
 
       - name: python.socket
