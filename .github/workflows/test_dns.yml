@@ -9,8 +9,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        try: ['0', '1', '2']
         os: ['macos-latest', 'ubuntu-latest']
+        try: ['0', '1', '2']
 
     steps:
       - name: Checkout
@@ -28,7 +28,14 @@ jobs:
       - name: hostname
         run: |
           for opt in '-A' '-d' '-f'; do
-              echo "hostname $opt: $(hostname $opt)"
+              echo "hostname $opt: $(hostname $opt 2>/dev/null || echo 'error')"
+          done
+
+      - name: nslookup
+        shell: bash
+        run: |
+          for host in "$(hostname)" "${hostname -f}"; do
+              echo 'nslookup $host: $(nslookup "host" | sed -n "s/Name:\s*\(.*\)/\1/p")'
           done
 
       - name: python.socket
