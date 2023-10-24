@@ -27,6 +27,7 @@ jobs:
 
       - name: hostname
         run: |
+          echo -e "List the different names/addresses associsated with this host:\n\n"
           for opt in '-A' '-d' '-f'; do
               echo "hostname $opt: $(hostname $opt 2>/dev/null || echo 'error')"
           done
@@ -34,6 +35,7 @@ jobs:
       - name: nslookup
         shell: bash
         run: |
+          echo -e "Expecting nslookup to return $(hostname -f)\n\n"
           for host in "$(hostname)" "$(hostname -f)"; do
               echo 'nslookup $host: $(nslookup "host" | sed -n "s/Name:\s*\(.*\)/\1/p")'
           done
@@ -41,6 +43,11 @@ jobs:
       - name: python.socket
         shell: python
         run: |
+          print(
+            'Expecting gethostname to return the same as "hostname"'
+            ' and the other interfaces to return the same as "hostname -f"'
+            '\n\n'
+          )
           import socket
           for expr in (
               'socket.gethostname()',
