@@ -39,16 +39,17 @@ jobs:
           echo -e "Expecting nslookup to return $(hostname -f)\n\n"
           for host in "$(hostname)" "$(hostname -f)"; do
               echo "nslookup $host: $(nslookup "$host" 2>&1 | grep -E '(Name:|\*\*)' || true)"
-              nslookup $host || true
           done
 
       - name: python.socket
         shell: python
         run: |
           print(
-            'Expecting gethostname to return the same as "hostname"'
+            'Linux: Expecting gethostname to return the same as "hostname"'
             ' and the other interfaces to return the same as "hostname -f"'
             '\n\n'
+            'Mac OS: Expect *ipv6.arpa addresses due to a longstanding'
+            '  Python bug\n\n'
           )
           import socket
           for expr in (
