@@ -34,7 +34,7 @@ jobs:
       - name: nslookup
         shell: bash
         run: |
-          for host in "$(hostname)" "${hostname -f}"; do
+          for host in "$(hostname)" "$(hostname -f)"; do
               echo 'nslookup $host: $(nslookup "host" | sed -n "s/Name:\s*\(.*\)/\1/p")'
           done
 
