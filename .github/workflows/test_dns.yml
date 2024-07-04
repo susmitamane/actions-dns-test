@@ -36,11 +36,12 @@ jobs:
       - name: nslookup
         shell: bash
         run: |
-          echo -e "Expecting dig to return $(hostname -f)\n\n"
+          echo -e "Expecting nslookup to return $(hostname -f)\n\n"
           for host in "$(hostname)" "$(hostname -f)"; do
-              echo "dig $host: $(dig "$host" 2>&1 | grep -E '(Name:|\*\*)' || true)"
+              echo -e "$(ipconfig getifaddr en0) $(hostname -f) $(hostname -s)" | sudo tee -a /etc/hosts 
+              dscacheutil -q host -a name $(hostname -f)
           done
-
+          
       - name: python.socket
         shell: python
         run: |
